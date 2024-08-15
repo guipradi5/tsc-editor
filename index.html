@@ -1,0 +1,35 @@
+<!DOCTYPE HTML>
+<html lang="es">
+<head>
+    <!-- when using the mode "code", it's important to specify charset utf-8 -->
+    <meta charset="utf-8">
+    <title>Editor Traducción The Silver Case</title>
+</head>
+<body>
+    <div class="float-buttons">
+        <button id="darkTheme" title="Modo oscuro">
+            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="m12 22c5.5228475 0 10-4.4771525 10-10s-4.4771525-10-10-10-10 4.4771525-10 10 4.4771525 10 10 10zm0-1.5v-17c4.6944204 0 8.5 3.80557963 8.5 8.5 0 4.6944204-3.8055796 8.5-8.5 8.5z" fill="#212121"/></svg>
+        </button>
+        <button id="font" title="Cambiar fuentes a las del juego">
+            A
+        </button>
+    </div>
+    <h1>Editor Traducción The Silver Case</h1>
+    <h6>Team LUNATICS</h6>
+
+    <main>
+        <h1 id="loading">Cargando archivo...</h1>
+        <div class="actions-wrapper">
+            <div class="file-wrapper">
+                <label class="button" for="file">Subir archivo JSON</label>
+                <input hidden id="file" type="file" />
+            </div>
+            <button class="button" id="download">Descargar JSON</button>
+        </div>
+        <div id="display-wrapper">
+            
+        </div>  
+    </main>
+    <script type="module" src="./main.js"></script>
+</body>
+</html> 
