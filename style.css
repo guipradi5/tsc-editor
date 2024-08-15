@@ -22,7 +22,7 @@ body.dark {
 .dark textarea {
   background-color: black;
   color: white;
-  border: rgba(255, 0, 0, 0.521) 1px solid
+  border: rgba(255, 0, 0, 0.5) 1px solid
 }
 
 .dark .line textarea:disabled {
@@ -110,12 +110,11 @@ body.dark {
 
 .line {
   display: grid;
-  grid-template-columns: 1fr 0.5fr 3fr 1fr;
+  grid-template-columns: 0.75fr 0.5fr 3fr 1fr;
   gap: 10px;
 }
 
 .line .id {
-  padding-top: 5px;
   font-size: 11px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -124,10 +123,18 @@ body.dark {
 }
 
 .line .char {
-  padding-top: 5px;
-  width: min-content;
   font-size: 11px;
+  text-align: right;
 }
+
+.line .char img {
+  height: 60px;
+  border: 1px grey solid
+}
+.dark .char img {
+  border: 1px rgba(255, 0, 0, 0.5) solid
+}
+
 .line textarea {
   font-family: monospace;
   font-size: 16px;

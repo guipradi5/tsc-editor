@@ -90,7 +90,7 @@ function renderJSON(json, filter){
     displayWrapper.innerHTML = `
     <div class="line header">
         <div>ID</div>
-        <div>Personaje</div>
+        <div style='text-align:right;'>Personaje</div>
         <div style='min-width: calc(10px* 35);'>Español</div>
         <div style='min-width: calc(10px* 35);'>Original</div>
     </div>`
@@ -101,7 +101,8 @@ function renderJSON(json, filter){
                     ${id}
                 </div>
                 <div class='char'>
-                    ${json.dic[id].chrName}
+                    <div><img src='portraits/FACE_${json.dic[id].chrName}.png' onerror="this.style.display='none'" /></div>
+                    <div>${json.dic[id].chrName}</div>
                 </div>
                 <div class="text-area-wrapper">
                     <textarea class="ES-text" id='${id}' data-type='dic' wrap='off'>${json.dic[id].messageEN.replaceAll('\\n', '\n')}</textarea>
