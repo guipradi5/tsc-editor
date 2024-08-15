@@ -21,6 +21,7 @@ function uploadJSONFile(e) {
 
     reader.onload = function() {
         fileName = input.files[0].name
+        document.querySelector('#fileName').innerHTML = fileName
         let keys = []
 
         loadedJSON = { dic: {}, stringDic: {}}
@@ -71,12 +72,14 @@ function JSONtoDisplay(data) {
     for(let key in data.dic){
       const chrName = data.dic[key].chrName
       const messageEN = data.dic[key].messageEN.replaceAll('\\\\', '\\')
-      Object.assign(dic, { [key]: {chrName, messageEN} })
+      const messageJP = data.dic[key].messageJP.replaceAll('\\\\', '\\')
+      Object.assign(dic, { [key]: {chrName, messageEN, messageJP} })
     }
   
     for(let key in data.stringDic){
-      const stringEN= data.stringDic[key].stringEN
-      Object.assign(stringDic, { [key]: {stringEN} })
+        const stringEN = data.stringDic[key].stringEN
+        const stringJP = data.stringDic[key].stringJP
+      Object.assign(stringDic, { [key]: {stringEN, stringJP} })
     }
   
     return {...data, dic, stringDic}
@@ -84,17 +87,26 @@ function JSONtoDisplay(data) {
 
 function renderJSON(json, filter){
     const displayWrapper = document.querySelector('#display-wrapper')
-    displayWrapper.innerHTML = '<div class="line floating-line"><div></div><div></div><div><div class="red-line"></div></div></div>'
+    displayWrapper.innerHTML = `
+    <div class="line header">
+        <div>ID</div>
+        <div>Personaje</div>
+        <div style='min-width: calc(10px* 35);'>Español</div>
+        <div style='min-width: calc(10px* 35);'>Original</div>
+    </div>`
     for(const id in json.dic){
         const div = `
-            <div class='line'>
+            <div class='line dic'>
                 <div class='id'>
                     ${id}
                 </div>
                 <div class='char'>
                     ${json.dic[id].chrName}
                 </div>
-                <textarea id='${id}' data-type='dic' wrap='off'>${json.dic[id].messageEN.replaceAll('\\n', '\n')}</textarea>
+                <div class="text-area-wrapper">
+                    <textarea class="ES-text" id='${id}' data-type='dic' wrap='off'>${json.dic[id].messageEN.replaceAll('\\n', '\n')}</textarea>
+                </div>
+                <textarea wrap='off'>${json.dic[id].messageJP.replaceAll('\\n', '\n')}</textarea>
             </div>
         `
         displayWrapper.innerHTML += div
@@ -103,18 +115,21 @@ function renderJSON(json, filter){
     displayWrapper.innerHTML += '<h4 class="mensajes">Mensajes</h4>'
     for(const id in json.stringDic){
         const div = `
-            <div class='line'>
+            <div class='line stringDic'>
                 <div class='id'>
                     ${id}
                 </div>
                 <div></div>
-                <textarea id='${id}' data-type='stringDic' class='${json.stringDic[id].stringEN.length > 30 ? 'warning' : ''}' wrap='off'>${json.stringDic[id].stringEN.replaceAll('\\n', '\n')}</textarea>
+                <div class="text-area-wrapper">
+                    <textarea class="ES-text" id='${id}' data-type='stringDic' class='${json.stringDic[id].stringEN.length > 30 ? 'warning' : ''}' wrap='off'>${json.stringDic[id].stringEN.replaceAll('\\n', '\n')}</textarea>
+                </div>
+                <textarea wrap='off'>${json.stringDic[id].stringJP.replaceAll('\\n', '\n')}</textarea>
             </div>
         `
         displayWrapper.innerHTML += div
     }
     
-    const allTextAreas = document.querySelectorAll('textarea')
+    const allTextAreas = document.querySelectorAll('.ES-text')
     for(const textarea of allTextAreas) {
         textarea.style.height = "15px";
         textarea.style.height = (textarea.scrollHeight + 15) + "px";
@@ -125,10 +140,8 @@ function renderJSON(json, filter){
     
     if(chiaro){
         document.querySelector('#display-wrapper').classList.add('chiaro')
-        document.querySelector('.red-line').classList.add('chiaro')
     } else {
         document.querySelector('#display-wrapper').classList.remove('chiaro')
-        document.querySelector('.red-line').classList.remove('chiaro')
     }
 
 }
@@ -176,7 +189,6 @@ let chiaro = false
 function changeFont() {
     chiaro = !chiaro
     document.querySelector('#display-wrapper').classList.toggle('chiaro')
-    document.querySelector('.red-line').classList.toggle('chiaro')
 }
 
 document.querySelector('#font').addEventListener('click', changeFont)

@@ -63,6 +63,7 @@ body.dark {
 
 .actions-wrapper {
   display: flex;
+  align-items: center;
   gap: 30px;
   margin-bottom: 20px;
 }
@@ -104,7 +105,7 @@ body.dark {
 
 .line {
   display: grid;
-  grid-template-columns: 1fr 0.5fr 3fr;
+  grid-template-columns: 1fr 0.5fr 3fr 1fr;
   gap: 10px;
 }
 
@@ -125,36 +126,47 @@ body.dark {
 .line textarea {
   font-family: monospace;
   font-size: 16px;
+  min-width: calc(10px * 35);
   width: 100%;
 }
 
-.chiaro textarea{
+.chiaro textarea {
   font-family: 'ChiaroTSCB';
   line-height: 1.3;
+  min-width: calc(10px * 35);
+}
+.text-area-wrapper {
+  display: flex;
 }
 
-
-.floating-line {
-  top: 0;
-  position: sticky;
-}
-.line .red-line {
-  position: absolute;
-  height: 100vh;
+.text-area-wrapper:before {
+  content: '';
   width: 1px;
-  overflow: hidden;
-  background-color: red;
-  margin-left: calc(10px * 35);
+  background: red;
+  transform: translateX(calc(10px * 35));
 }
 
-.red-line.chiaro {
-  margin-left: calc(9.1px * 35);
+.chiaro .text-area-wrapper:before {
+  transform: translateX(calc(8.4px * 35));
+}
+
+.stringDic .text-area-wrapper:before {
+  transform: translateX(calc(9.8px * 30));
+}
+.chiaro .stringDic  .text-area-wrapper:before {
+  transform: translateX(calc(8.15px * 30));
 }
 
 .warning {
+  background-color: rgb(139 32 0);
   border: 1px red solid;
-  outline-color: red; 
+  outline-color: red;
 }
+
+.dark .warning {
+  background-color: rgb(139 32 0);
+}
+
 
 .mensajes {
   border-bottom: grey 1px solid;
