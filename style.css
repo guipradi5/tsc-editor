@@ -135,6 +135,10 @@ body.dark {
   border: 1px rgba(255, 0, 0, 0.5) solid
 }
 
+.line .char > div:nth-child(2) {
+  padding-top: 5px;
+}
+
 .line textarea {
   font-family: monospace;
   font-size: 16px;

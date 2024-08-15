@@ -52,11 +52,16 @@ function uploadJSONFile(e) {
         console.log("JSON:")
         console.log(loadedJSON)
 
+        console.log(1)
         downloadJSON = JSON.parse(JSON.stringify(loadedJSON))
+        console.log(2)
         displayJSON = JSONtoDisplay(loadedJSON)
+        console.log(3)
         renderJSON(displayJSON)
+        console.log(4)
         
         loadingMessage.style.display = 'none'
+        console.log(5)
     };
 
     reader.onerror = function() {
@@ -68,7 +73,6 @@ function uploadJSONFile(e) {
 function JSONtoDisplay(data) {
     let dic = {}
     let stringDic = {}
-  
     for(let key in data.dic){
       const chrName = data.dic[key].chrName
       const messageEN = data.dic[key].messageEN.replaceAll('\\\\', '\\')
@@ -94,8 +98,14 @@ function renderJSON(json, filter){
         <div style='min-width: calc(10px* 35);'>Español</div>
         <div style='min-width: calc(10px* 35);'>Original</div>
     </div>`
+
+    let finalHTML = ''
+    const totalKeys = Object.keys(json.dic).length + Object.keys(json.stringDic).length
+    let keyCounter = 0
     for(const id in json.dic){
-        const div = `
+        keyCounter++
+        updatePercent(totalKeys, keyCounter, 0.98)
+        finalHTML += `
             <div class='line dic'>
                 <div class='id'>
                     ${id}
@@ -110,12 +120,13 @@ function renderJSON(json, filter){
                 <textarea disabled wrap='off'>${json.dic[id].messageJP.replaceAll('\\n', '\n')}</textarea>
             </div>
         `
-        displayWrapper.innerHTML += div
-
     }
-    displayWrapper.innerHTML += '<h4 class="mensajes">Mensajes</h4>'
+
+    finalHTML += '<h4 class="mensajes">Mensajes</h4>'
     for(const id in json.stringDic){
-        const div = `
+        keyCounter++
+        updatePercent(totalKeys, keyCounter, 0.98)
+        finalHTML += `
             <div class='line stringDic'>
                 <div class='id'>
                     ${id}
@@ -127,8 +138,8 @@ function renderJSON(json, filter){
                 <textarea disabled wrap='off'>${json.stringDic[id].stringJP.replaceAll('\\n', '\n')}</textarea>
             </div>
         `
-        displayWrapper.innerHTML += div
     }
+    displayWrapper.innerHTML += finalHTML
     
     const allTextAreas = document.querySelectorAll('.ES-text')
     for(const textarea of allTextAreas) {
@@ -174,6 +185,12 @@ function downloadTheJSON() {
 
 function reemplazar(term1, term2) {
     
+}
+
+function updatePercent(total, partial, factor = 1){
+    const finalPercent = ((partial * 100) / total) * factor
+    console.log(finalPercent)
+    document.querySelector('#percent').innerHTML = finalPercent
 }
 
 document.querySelector('#file').addEventListener('change', uploadJSONFile)
