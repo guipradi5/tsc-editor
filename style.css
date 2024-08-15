@@ -24,6 +24,10 @@ body.dark {
   border: rgba(255, 0, 0, 0.521) 1px solid
 }
 
+.dark .line textarea:disabled {
+  background-color: black;
+}
+
 .float-buttons {
   display: flex;
   align-content: center;
@@ -128,6 +132,12 @@ body.dark {
   font-size: 16px;
   min-width: calc(10px * 35);
   width: 100%;
+  padding: 5px;
+}
+
+.line textarea:disabled {
+  resize: none;
+  background-color: white;
 }
 
 .chiaro textarea {
@@ -143,18 +153,18 @@ body.dark {
   content: '';
   width: 1px;
   background: red;
-  transform: translateX(calc(10px * 35));
+  transform: translateX(calc(5px + 10px * 35));
 }
 
 .chiaro .text-area-wrapper:before {
-  transform: translateX(calc(8.4px * 35));
+  transform: translateX(calc(5px + 8.4px * 35));
 }
 
 .stringDic .text-area-wrapper:before {
-  transform: translateX(calc(9.8px * 30));
+  transform: translateX(calc(5px + 9.8px * 30));
 }
 .chiaro .stringDic  .text-area-wrapper:before {
-  transform: translateX(calc(8.15px * 30));
+  transform: translateX(calc(5px + 8.15px * 30));
 }
 
 .warning {

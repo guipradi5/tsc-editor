@@ -106,7 +106,7 @@ function renderJSON(json, filter){
                 <div class="text-area-wrapper">
                     <textarea class="ES-text" id='${id}' data-type='dic' wrap='off'>${json.dic[id].messageEN.replaceAll('\\n', '\n')}</textarea>
                 </div>
-                <textarea wrap='off'>${json.dic[id].messageJP.replaceAll('\\n', '\n')}</textarea>
+                <textarea disabled wrap='off'>${json.dic[id].messageJP.replaceAll('\\n', '\n')}</textarea>
             </div>
         `
         displayWrapper.innerHTML += div
@@ -123,7 +123,7 @@ function renderJSON(json, filter){
                 <div class="text-area-wrapper">
                     <textarea class="ES-text" id='${id}' data-type='stringDic' class='${json.stringDic[id].stringEN.length > 30 ? 'warning' : ''}' wrap='off'>${json.stringDic[id].stringEN.replaceAll('\\n', '\n')}</textarea>
                 </div>
-                <textarea wrap='off'>${json.stringDic[id].stringJP.replaceAll('\\n', '\n')}</textarea>
+                <textarea disabled wrap='off'>${json.stringDic[id].stringJP.replaceAll('\\n', '\n')}</textarea>
             </div>
         `
         displayWrapper.innerHTML += div
