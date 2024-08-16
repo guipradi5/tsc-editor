@@ -159,7 +159,8 @@ function renderJSON(json, filter){
 }
 
 function changeText(e, prop) {
-    const newText = e.target.value.replaceAll('\n', '\\n').replaceAll('\\', '\\\\')
+    const newText = e.target.value.replaceAll('\n', '\\n')
+    console.log(newText)
     const id = e.target.id
     downloadJSON[prop][id].messageEN = newText
     e.target.style.height = "15px";
@@ -174,7 +175,7 @@ function changeText(e, prop) {
 }
 
 function downloadTheJSON() {
-    var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(downloadJSON).replace(/\_\_\d+/g, ''));
+    var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(downloadJSON).replaceAll('\\', '\\\\').replace(/\_\_\d+/g, ''));
     var downloadAnchorNode = document.createElement('a');
     downloadAnchorNode.setAttribute("href",     dataStr);
     downloadAnchorNode.setAttribute("download", fileName);
