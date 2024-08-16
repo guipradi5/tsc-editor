@@ -43,7 +43,7 @@ function uploadJSONFile(e) {
         
         // Or passing the stream in several chunks 
         try {
-            parser.write(reader.result);
+            parser.write(reader.result.replaceAll('\\\\', '\\'));
         } catch (err) {
             console.log(err); // handler errors 
             loadingMessage.style.display = 'none'
@@ -75,8 +75,8 @@ function JSONtoDisplay(data) {
     let stringDic = {}
     for(let key in data.dic){
       const chrName = data.dic[key].chrName
-      const messageEN = data.dic[key].messageEN.replaceAll('\\\\', '\\')
-      const messageJP = data.dic[key].messageJP.replaceAll('\\\\', '\\')
+      const messageEN = data.dic[key].messageEN
+      const messageJP = data.dic[key].messageJP
       Object.assign(dic, { [key]: {chrName, messageEN, messageJP} })
     }
   
