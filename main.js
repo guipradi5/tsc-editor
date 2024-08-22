@@ -52,16 +52,11 @@ function uploadJSONFile(e) {
         console.log("JSON:")
         console.log(loadedJSON)
 
-        console.log(1)
         downloadJSON = JSON.parse(JSON.stringify(loadedJSON))
-        console.log(2)
         displayJSON = JSONtoDisplay(loadedJSON)
-        console.log(3)
         renderJSON(displayJSON)
-        console.log(4)
         
         loadingMessage.style.display = 'none'
-        console.log(5)
     };
 
     reader.onerror = function() {
@@ -160,9 +155,11 @@ function renderJSON(json, filter){
 
 function changeText(e, prop) {
     const newText = e.target.value.replaceAll('\n', '\\n')
-    console.log(newText)
     const id = e.target.id
-    downloadJSON[prop][id].messageEN = newText
+    if(prop === 'dic')
+        downloadJSON[prop][id].messageEN = newText
+    else
+        downloadJSON[prop][id].stringEN = newText
     e.target.style.height = "15px";
     e.target.style.height = (e.target.scrollHeight + 15) + "px";
     if(prop === 'stringDic') {
@@ -190,7 +187,6 @@ function reemplazar(term1, term2) {
 
 function updatePercent(total, partial, factor = 1){
     const finalPercent = ((partial * 100) / total) * factor
-    console.log(finalPercent)
     document.querySelector('#percent').innerHTML = finalPercent
 }
 
