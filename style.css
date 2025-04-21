@@ -15,6 +15,7 @@
 
 body {
   font-family: arial;
+  margin: 0;
 }
 
 body.dark {
@@ -49,7 +50,7 @@ main {
   justify-content: space-between;
   position: sticky;
   top: 0;
-  width: calc(100% - 30px);
+  width: calc(100% - 60px);
   margin-bottom: 30px;
   border-bottom: 1px rgba(0, 0, 0, 0.445) solid;
   z-index: 1;
@@ -74,7 +75,7 @@ main {
 }
 
 .other-buttons button:hover {
-  background: var(--tsc-yellow)
+  background-color: var(--tsc-yellow)
 }
 
 .dark #loading {
@@ -130,7 +131,7 @@ main {
 }
 
 .actions-wrapper .button:hover {
-  background: var(--tsc-yellow);
+  background-color: var(--tsc-yellow);
   background-position: 0%;
 }
 
@@ -235,6 +236,25 @@ main {
 
 .mensajes {
   border-bottom: grey 1px solid;
+}
+
+
+#gameMode {
+  background-size: contain;
+  background-position: center;
+}
+
+#gameMode:hover {
+  background-color: transparent;
+  filter: brightness(1.5);
+}
+
+button.tsc {
+  background: url('../portraits/FACE_KUSABI.png');
+}
+
+button.t25w {
+  background: url('../portraits/25/SHIROYABU.png');
 }
 
 

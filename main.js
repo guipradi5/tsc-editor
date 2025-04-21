@@ -1,6 +1,12 @@
 import './style.css'
 import { JSONParser } from '@streamparser/json';
 
+let params = new URLSearchParams(document.location.search);
+let game = params.get("game"); // is the string "Jonathan"
+
+
+let dic = 'dic'
+
 let loadedJSON = {}
 let ogLoadedJSON = {}
 let displayJSON = {}
@@ -8,6 +14,10 @@ let ogDisplayJSON = {}
 let downloadJSON = {}
 
 let fileName = ''
+
+if (game === 't25w') {
+    toggleMode()
+}
 
 let loadingMessage = document.querySelector('#loading')
 loadingMessage.style.display = 'none'
@@ -35,8 +45,12 @@ async function uploadJSONFile(e) {
     reader.onload = function () {
         document.querySelector('#fileName').innerHTML = fileName
 
+        let theJson = reader.result
+        if (dic === 'dic') {
+            theJson = theJson.replaceAll('\\\\', '\\')
+        }
 
-        loadedJSON = parseStuff(reader.result.replaceAll('\\\\', '\\'))
+        loadedJSON = parseStuff(theJson)
         ogLoadedJSON = parseStuff(ogFile)
 
         console.log("JSON:")
@@ -59,11 +73,11 @@ async function uploadJSONFile(e) {
 
 function parseStuff(stuff) {
     let keys = []
-    const theJSON = { dic: {}, stringDic: {} }
+    const theJSON = { [dic]: {}, stringDic: {} }
     const parser = new JSONParser();
     parser.onValue = ({ key, value }) => {
         if (value && (value.hasOwnProperty('messageEN') || value.hasOwnProperty('stringEN'))) {
-            const upperKey = value.hasOwnProperty('messageEN') ? 'dic' : 'stringDic'
+            const upperKey = value.hasOwnProperty('messageEN') ? dic : 'stringDic'
             let lowerKey = key
             if (keys.includes(key)) {
                 const number = keys.filter((savedKey) => savedKey === key).length + 1
@@ -86,13 +100,13 @@ function parseStuff(stuff) {
 }
 
 function JSONtoDisplay(data) {
-    let dic = {}
+    let _dic = {}
     let stringDic = {}
-    for (let key in data.dic) {
-        const chrName = data.dic[key].chrName
-        const messageEN = data.dic[key].messageEN
-        const messageJP = data.dic[key].messageJP
-        Object.assign(dic, { [key]: { chrName, messageEN, messageJP } })
+    for (let key in data[dic]) {
+        const chrName = data[dic][key].chrName
+        const messageEN = data[dic][key].messageEN
+        const messageJP = data[dic][key].messageJP
+        Object.assign(_dic, { [key]: { chrName, messageEN, messageJP } })
     }
 
     for (let key in data.stringDic) {
@@ -101,7 +115,7 @@ function JSONtoDisplay(data) {
         Object.assign(stringDic, { [key]: { stringEN, stringJP } })
     }
 
-    return { ...data, dic, stringDic }
+    return { ...data, _dic, stringDic }
 }
 
 function renderJSON(json, ogJson, filter) {
@@ -115,25 +129,26 @@ function renderJSON(json, ogJson, filter) {
     </div>`
 
     let finalHTML = ''
-    const totalKeys = Object.keys(json.dic).length + Object.keys(json.stringDic).length
+    const totalKeys = Object.keys(json[dic]).length + Object.keys(json.stringDic).length
     let keyCounter = 0
-    for (const id in json.dic) {
+    for (const id in json[dic]) {
         keyCounter++
         updatePercent(totalKeys, keyCounter, 0.98)
+        let faceDir = dic === 'dic' ? `/FACE_${json[dic][id].chrName}.png` : `/25/${json[dic][id].chrName}.png`
         finalHTML += `
-            <div class='line dic'>
+            <div class='line ${dic}'>
                 <div class='char'>
-                    <div><img src='portraits/FACE_${json.dic[id].chrName}.png' onerror="this.style.display='none'" /></div>
-                    <div>${json.dic[id].chrName}</div>
+                    <div><img src='portraits${faceDir}' onerror="this.style.display='none'" /></div>
+                    <div>${json[dic][id].chrName.replace(/\bONNA\b/, 'MUJER').replace(/\bOTOKO\b/, 'HOMBRE')}</div>
                     <div class="lineId"> ${id} </div>
                 </div>
                 <div class="text-area-wrapper">
-                    <textarea class="ES-text" id='${id}' data-type='dic' wrap='off'>${json.dic[id].messageEN.replaceAll('\\n', '\n')}</textarea>
+                    <textarea class="ES-text" id='${id}' data-type='${dic}' wrap='off'>${json[dic][id].messageEN.replaceAll('\\n', '\n')}</textarea>
                 </div>
                 <div class="text-area-wrapper">
-                    <textarea class="ES-text" id='EN_${id}' disabled data-type='dic' wrap='off'>${ogJson.dic[id] ? ogJson.dic[id].messageEN.replaceAll('\\n', '\n') : 'NOT FOUND'}</textarea>
+                    <textarea class="ES-text" id='EN_${id}' disabled data-type='${dic}' wrap='off'>${ogJson[dic][id] ? ogJson[dic][id].messageEN.replaceAll('\\n', '\n') : 'NOT FOUND'}</textarea>
                 </div>
-                <textarea disabled wrap='off'>${json.dic[id].messageJP.replaceAll('\\n', '\n')}</textarea>
+                <textarea disabled wrap='off'>${json[dic][id].messageJP.replaceAll('\\n', '\n')}</textarea>
             </div>
         `
     }
@@ -179,7 +194,7 @@ function renderJSON(json, ogJson, filter) {
 function changeText(e, prop) {
     const newText = e.target.value.replaceAll('\n', '\\n')
     const id = e.target.id
-    if (prop === 'dic')
+    if (prop === dic)
         downloadJSON[prop][id].messageEN = newText
     else
         downloadJSON[prop][id].stringEN = newText
@@ -230,3 +245,32 @@ function changeFont() {
 }
 
 document.querySelector('#font').addEventListener('click', changeFont)
+
+function toggleMode() {
+    if (dic === 'dic') {
+        dic = 'MessageDic'
+        document.querySelector('#gameMode').classList.remove('tsc')
+        document.querySelector('#gameMode').classList.add('t25w')
+
+        document.querySelector('#T25WTag').style.display = "inline"
+        document.querySelector('#TSCTag').style.display = "none"
+    } else if (dic === 'MessageDic') {
+        dic = 'dic'
+        document.querySelector('#gameMode').classList.remove('t25w')
+        document.querySelector('#gameMode').classList.add('tsc')
+
+        document.querySelector('#TSCTag').style.display = "inline"
+        document.querySelector('#T25WTag').style.display = "none"
+    }
+    document.querySelector('#display-wrapper').innerHTML = ""
+    loadedJSON = {}
+    ogLoadedJSON = {}
+    displayJSON = {}
+    ogDisplayJSON = {}
+    downloadJSON = {}
+    fileName = ''
+
+    document.querySelector('#fileName').innerHTML = ""
+}
+
+document.querySelector('#gameMode').addEventListener('click', toggleMode)
