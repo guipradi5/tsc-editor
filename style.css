@@ -173,7 +173,25 @@ main {
   border: 1px grey solid
 }
 
-.dark .char img {
+.line .char img+span {
+  display: none;
+  background: black;
+  color: white;
+  min-width: 40px;
+  height: 62px;
+  font-size: 0.8em;
+  padding: 5px;
+  border: 1px grey solid
+}
+
+.line .char .show-default-name-box+span {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.dark .char img,
+.dark .char img+span {
   border: 1px rgba(255, 0, 0, 0.5) solid
 }
 

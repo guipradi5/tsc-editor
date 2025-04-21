@@ -16,7 +16,7 @@ let downloadJSON = {}
 let fileName = ''
 
 if (game === 't25w') {
-    toggleMode()
+    toggleMode(false)
 }
 
 let loadingMessage = document.querySelector('#loading')
@@ -134,12 +134,16 @@ function renderJSON(json, ogJson, filter) {
     for (const id in json[dic]) {
         keyCounter++
         updatePercent(totalKeys, keyCounter, 0.98)
+        const isName = !!json[dic][id].chrName
         let faceDir = dic === 'dic' ? `/FACE_${json[dic][id].chrName}.png` : `/25/${json[dic][id].chrName}.png`
         finalHTML += `
             <div class='line ${dic}'>
                 <div class='char'>
-                    <div><img src='portraits${faceDir}' onerror="this.style.display='none'" /></div>
-                    <div>${json[dic][id].chrName.replace(/\bONNA\b/, 'MUJER').replace(/\bOTOKO\b/, 'HOMBRE')}</div>
+                    <div>
+                      <img src='portraits${faceDir}' onerror="this.style.display='none'; this.classList.add('show-default-name-box')" />
+                      <span style="${!isName ? 'display: none' : ''}">${json[dic][id].chrName.replace(/\bONNA\b/, 'MUJER').replace(/\bOTOKO\b/, 'HOMBRE')}<span>
+                    </div>
+                    <div>${json[dic][id].chrName}</div>
                     <div class="lineId"> ${id} </div>
                 </div>
                 <div class="text-area-wrapper">
@@ -273,4 +277,15 @@ function toggleMode() {
     document.querySelector('#fileName').innerHTML = ""
 }
 
-document.querySelector('#gameMode').addEventListener('click', toggleMode)
+function handleChangeMode() {
+    if (Object.keys(downloadJSON).length !== 0 && downloadJSON.constructor === Object) {
+        if (confirm("Tienes cambios sin guardar.\n¿Quieres Guardar y cambiar de modo?") === true) {
+            downloadTheJSON()
+            toggleMode()
+        }
+    } else {
+        toggleMode()
+    }
+}
+
+document.querySelector('#gameMode').addEventListener('click', handleChangeMode)
