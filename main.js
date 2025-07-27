@@ -170,7 +170,7 @@ function renderJSON(json, ogJson, filter) {
                     <textarea class="ES-text" id='${id}' data-type='stringDic' class='${json.stringDic[id].stringEN.length > 30 ? 'warning' : ''}' wrap='off'>${json.stringDic[id].stringEN.replaceAll('\\n', '\n')}</textarea>
                 </div>
                 <div class="text-area-wrapper">
-                    <textarea class="ES-text" id='${id}' data-type='stringDic' class='${ogJson.stringDic[id].stringEN.length > 30 ? 'warning' : ''}' wrap='off'>${json.stringDic[id].stringEN.replaceAll('\\n', '\n')}</textarea>
+                    <textarea class="ES-text" id='${id}' data-type='stringDic' class='${ogJson.stringDic[id].stringEN.length > 30 ? 'warning' : ''}' wrap='off'>${ogJson.stringDic[id].stringEN.replaceAll('\\n', '\n')}</textarea>
                 </div>
                 <textarea disabled wrap='off'>${json.stringDic[id].stringJP.replaceAll('\\n', '\n')}</textarea>
             </div>
