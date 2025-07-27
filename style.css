@@ -51,9 +51,30 @@ main {
   position: sticky;
   top: 0;
   width: calc(100% - 60px);
+  z-index: 2;
+}
+
+.filter-section {
+  top: 55px;
   margin-bottom: 30px;
   border-bottom: 1px rgba(0, 0, 0, 0.445) solid;
+  transition: all .5s ease;
   z-index: 1;
+}
+
+.filter-section.hide {
+  top: 0px
+}
+
+.filters {
+  display: flex;
+  justify-content: start;
+  gap: 20px;
+}
+
+.filters>div {
+  display: flex;
+  flex-direction: column;
 }
 
 .other-buttons {
@@ -149,6 +170,11 @@ main {
   display: grid;
   grid-template-columns: 0.75fr 3fr 3fr 1fr;
   gap: 10px;
+}
+
+.line.upper-divisor {
+  border-top: 2px grey solid;
+  padding-top: 20px;
 }
 
 .lineId {

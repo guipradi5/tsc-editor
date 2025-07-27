@@ -22,6 +22,7 @@ if (game === 't25w') {
 let loadingMessage = document.querySelector('#loading')
 loadingMessage.style.display = 'none'
 
+
 async function uploadJSONFile(e) {
     loadingMessage.style.display = 'block'
     const input = e.target
@@ -58,8 +59,10 @@ async function uploadJSONFile(e) {
         console.log(ogLoadedJSON)
 
         downloadJSON = JSON.parse(JSON.stringify(loadedJSON))
-        displayJSON = JSONtoDisplay(loadedJSON)
+        displayJSON = JSONtoDisplay(loadedJSON, true)
         ogDisplayJSON = JSONtoDisplay(ogLoadedJSON)
+
+        setupFilters()
         renderJSON(displayJSON, ogDisplayJSON)
 
         loadingMessage.style.display = 'none'
@@ -99,14 +102,39 @@ function parseStuff(stuff) {
     }
 }
 
-function JSONtoDisplay(data) {
+const scenesListIds = []
+const scenesList = []
+const charsList = []
+
+function JSONtoDisplay(data, bakeFilters = false) {
     let _dic = {}
     let stringDic = {}
     for (let key in data[dic]) {
         const chrName = data[dic][key].chrName
         const messageEN = data[dic][key].messageEN
         const messageJP = data[dic][key].messageJP
-        Object.assign(_dic, { [key]: { chrName, messageEN, messageJP } })
+
+        if (bakeFilters) {
+            const sceneInfo = getScene(key)
+
+            if (!charsList.includes(chrName))
+                charsList.push(chrName)
+
+            if (!scenesListIds.includes(sceneInfo.id)) {
+                scenesListIds.push(sceneInfo.id)
+                sceneInfo.chars.push(chrName)
+                scenesList.push(sceneInfo)
+            } else {
+                const scene = scenesList.find((sc) => sc.id === sceneInfo.id)
+                if (!scene.chars.includes(chrName)) {
+                    scene.chars.push(chrName)
+                }
+            }
+
+            const scene = scenesList.find((sc) => sc.id === sceneInfo.id)
+            Object.assign(_dic, { [key]: { chrName, messageEN, messageJP, scene: scene } })
+        } else
+            Object.assign(_dic, { [key]: { chrName, messageEN, messageJP } })
     }
 
     for (let key in data.stringDic) {
@@ -118,7 +146,71 @@ function JSONtoDisplay(data) {
     return { ...data, _dic, stringDic }
 }
 
-function renderJSON(json, ogJson, filter) {
+
+function getScene(key) {
+    const regex = /_+/;
+    const splittedKey = key.split(regex)
+    let sceneInfo = { type: '', id: null, chars: [] }
+    switch (splittedKey[0]) {
+        case 'SRF':
+            sceneInfo.type = 'Dialogo'
+            sceneInfo.id = splittedKey[splittedKey.length - 2]
+            break;
+        case 'CHAT':
+        case 'BBS':
+            sceneInfo.type = 'Chat'
+            sceneInfo.id = splittedKey[1]
+            break;
+        case 'MAIL':
+        case 'SMAIL':
+            sceneInfo.type = 'Mail'
+            sceneInfo.id = splittedKey[1]
+            break;
+        case 'MSG':
+            sceneInfo.type = 'Texto'
+            sceneInfo.id = splittedKey[1]
+            break;
+        default:
+            sceneInfo.type = 'Otro'
+            sceneInfo.id = key
+            break;
+    }
+    return sceneInfo
+}
+
+function setupFilters() {
+
+    //Characters
+    $('#character-select').append('<option value="0" data-img="https://placehold.co/20x20?text=Todos">Todos</option>');
+    for (let chrName of charsList) {
+        let faceDir = dic === 'dic' ? `/FACE_${chrName}.png` : `/25/${chrName}.png`
+        $('#character-select').append(`<option value="${chrName}" data-img="portraits${faceDir}">${chrName}</option>`);
+    }
+    $('#character-select').trigger('change');
+
+    //Scenes
+    const scenesTypes = []
+
+    for (let scene of scenesList) {
+        if (!scenesTypes.includes(scene.type))
+            scenesTypes.push(scene.type)
+    }
+    scenesTypes.sort()
+    for (let sceneType of scenesTypes) {
+        $('#scenes-select').append(`<optgroup label="${sceneType}" id="${sceneType}_group">`);
+    }
+
+    for (let scene of scenesList) {
+        $(`#${scene.type}_group`).append(`<option value="${scene.id}" data-img="https://placehold.co/20x20?text=${scene.type[0]}" >${scene.id}</option>`);
+    }
+    $('#scenes-select').trigger('change');
+
+}
+
+function renderJSON(translatedJSON, originalJSON, filter = false) {
+    let json = translatedJSON
+    let ogJson = originalJSON
+
     const displayWrapper = document.querySelector('#display-wrapper')
     displayWrapper.innerHTML = `
     <div class="line header">
@@ -131,13 +223,33 @@ function renderJSON(json, ogJson, filter) {
     let finalHTML = ''
     const totalKeys = Object.keys(json[dic]).length + Object.keys(json.stringDic).length
     let keyCounter = 0
+
+    let lastSceneId = -1
     for (const id in json[dic]) {
         keyCounter++
         updatePercent(totalKeys, keyCounter, 0.98)
-        const isName = !!json[dic][id].chrName
-        let faceDir = dic === 'dic' ? `/FACE_${json[dic][id].chrName}.png` : `/25/${json[dic][id].chrName}.png`
-        finalHTML += `
-            <div class='line ${dic}'>
+        let filterIn = true
+
+        if (filter) {
+            let scene = true
+            let character = true
+
+            if (filters.scene !== '0')
+                scene = json._dic[id].scene.id === filters.scene
+
+            if (filters.character !== '0')
+                character = json._dic[id].scene.chars.includes(filters.character)
+
+            filterIn = scene && character
+        }
+
+        if (filterIn) {
+            const isName = !!json[dic][id].chrName
+            let faceDir = dic === 'dic' ? `/FACE_${json[dic][id].chrName}.png` : `/25/${json[dic][id].chrName}.png`
+            let sceneId = getScene(id).id
+            const isFirstLineOfScene = sceneId !== lastSceneId
+            finalHTML += `
+            <div class='line ${dic} ${isFirstLineOfScene ? 'upper-divisor' : ''}'>
                 <div class='char'>
                     <div>
                       <img src='portraits${faceDir}' onerror="this.style.display='none'; this.classList.add('show-default-name-box')" />
@@ -155,6 +267,9 @@ function renderJSON(json, ogJson, filter) {
                 <textarea disabled wrap='off'>${json[dic][id].messageJP.replaceAll('\\n', '\n')}</textarea>
             </div>
         `
+        }
+
+        lastSceneId = getScene(id).id
     }
 
     finalHTML += '<h4 class="mensajes">Mensajes</h4>'
@@ -289,3 +404,53 @@ function handleChangeMode() {
 }
 
 document.querySelector('#gameMode').addEventListener('click', handleChangeMode)
+
+
+//Select2
+function formatOption(option) {
+    if (!option.id) {
+        return option.text;
+    }
+    var imgSrc = $(option.element).data('img');
+    return $(
+        '<span><img src="' + imgSrc + '" style="width:20px;height:20px;margin-right:8px;vertical-align:middle;">' +
+        option.text + '</span>'
+    );
+}
+
+
+$('#character-select, #scenes-select').select2({
+    templateResult: formatOption,
+    templateSelection: formatOption,
+    minimumResultsForSearch: Infinity // Oculta buscador
+});
+
+let filters = {}
+
+$('#character-select').on('change', function () {
+    let selectedValue = $(this).val();
+    if (selectedValue !== 0)
+        filters.character = selectedValue
+    else
+        filters.character = null
+    renderJSON(displayJSON, ogDisplayJSON, true)
+});
+$('#scenes-select').on('change', function () {
+    let selectedValue = $(this).val();
+    if (selectedValue !== 0)
+        filters.scene = selectedValue
+    else
+        filters.scene = null
+    renderJSON(displayJSON, ogDisplayJSON, true)
+});
+
+function toggleFilters() {
+    const filterSection = document.querySelector('#filter-section')
+    filterSection.classList.toggle('hide')
+    if (filterSection.classList.contains('hide'))
+        document.querySelector('#filterToggle').innerHTML = 'Abrir Filtros'
+    else
+        document.querySelector('#filterToggle').innerHTML = 'Cerrar Filtros'
+}
+
+document.querySelector('#filterToggle').addEventListener('click', toggleFilters)
