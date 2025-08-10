@@ -1,4 +1,4 @@
-# tsc-editor
+# The Silver Case / The 25th Ward Chapter Text Editor
  
  This node application allows to load a Silver Case script/message JSON, modify and download it.
 
