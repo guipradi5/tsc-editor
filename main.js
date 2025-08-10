@@ -47,7 +47,7 @@ async function uploadJSONFile(e) {
         document.querySelector('#fileName').innerHTML = fileName
 
         let theJson = reader.result
-        if (dic === 'dic') {
+        if (dic === 'dic' && false) { //TODO: Delete once the correct dumps are used for the team
             theJson = theJson.replaceAll('\\\\', '\\')
         }
 
