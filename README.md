@@ -4,7 +4,7 @@
 
  It reads the `dic` and `stringDic` properties in the JSON, parses their keys and reads the messageEN and messageJP properties to display them and be able to modify them.
 
- ``npm run install``
+ ``npm install``
 
  ``npm run dev`` to run a local server.
 
