@@ -47,9 +47,6 @@ async function uploadJSONFile(e) {
         document.querySelector('#fileName').innerHTML = fileName
 
         let theJson = reader.result
-        if (dic === 'dic' && false) { //TODO: Delete once the correct dumps are used for the team
-            theJson = theJson.replaceAll('\\\\', '\\')
-        }
 
         loadedJSON = parseStuff(theJson)
         ogLoadedJSON = parseStuff(ogFile)
@@ -329,7 +326,7 @@ function changeText(e, prop) {
 }
 
 function downloadTheJSON() {
-    var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(downloadJSON).replaceAll('\\', '\\\\').replace(/\_\_\d+/g, ''));
+    var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(downloadJSON));
     var downloadAnchorNode = document.createElement('a');
     downloadAnchorNode.setAttribute("href", dataStr);
     downloadAnchorNode.setAttribute("download", fileName);

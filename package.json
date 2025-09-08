@@ -5,12 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build --base=/tsc/editor/",
     "preview": "vite preview"
   },
   "devDependencies": {
-    "@vitejs/plugin-legacy": "^7.1.1",
-    "vite": "^7.1.1"
+    "@vitejs/plugin-legacy": "^5.4.1",
+    "vite": "^5.4.0"
   },
   "dependencies": {
     "@streamparser/json": "^0.0.21"

@@ -301,6 +301,16 @@ button.t25w {
   background: url('../portraits/25/SHIROYABU.png');
 }
 
+.version {
+  position: absolute;
+  font-size: 10px;
+  top: 2px;
+  right: 2px;
+}
+
+
+
+
 
 body::-webkit-scrollbar {
   width: 10px;
