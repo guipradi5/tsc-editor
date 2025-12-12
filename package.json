@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build --base=/tsc/editor/",
+    "build": "vite build",
+    "build:github": "vite build --base=/tsc/editor/",
     "preview": "vite preview"
   },
   "devDependencies": {
